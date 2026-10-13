@@ -8,6 +8,22 @@ You start with **3 lives** and must survive **2 minutes per level**. Enemies mov
 
 The timer resets at the beginning of each level, while your **score and remaining lives carry over**. Survive all four levels to win; lose all three lives and it's game over.
 
+## Screenshots
+
+### Main Menu
+
+![Got 2 Survive — Main Menu](screenshots/main-menu.png)
+
+### Gameplay
+
+Each stage has a distinct monochromatic palette and introduces new enemy combinations and attack patterns.
+
+| Level 1 — Arcane | Level 2 — Abyssal |
+|:---:|:---:|
+| ![Level 1 gameplay](screenshots/level-1.png) | ![Level 2 gameplay](screenshots/level-2.png) |
+| **Level 3 — Crimson** | **Level 4 — Frost** |
+| ![Level 3 gameplay](screenshots/level-3.png) | ![Level 4 gameplay](screenshots/level-4.png) |
+
 ## Features
 
 - **Four levels**, each with its own monochromatic pixel-art palette.
