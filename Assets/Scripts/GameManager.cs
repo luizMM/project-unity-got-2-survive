@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
 
     public static int PontuacaoFinal { get; private set; }
 
+    public static bool NovoRecorde { get; private set; }
+
 
     void Awake()
     {
@@ -47,6 +49,8 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        NovoRecorde = false;
 
         PontuacaoFinal = 0;
 
@@ -187,8 +191,16 @@ public class GameManager : MonoBehaviour
 
         jogoAtivo = false;
 
-        // Salva a pontuação final
         PontuacaoFinal = Mathf.FloorToInt(pontuacao);
+
+        // Verifica o melhor score antes de salvar
+        int recordeAnterior = HighScoreManager.ObterMelhorScore();
+
+        // Verifica se a pontuação superou o recorde anterior
+        NovoRecorde = PontuacaoFinal > recordeAnterior;
+
+        // Salva a pontuação no Top 5
+        HighScoreManager.SalvarScore(PontuacaoFinal);
 
         Debug.Log("GAME OVER! Score: " + PontuacaoFinal);
 
@@ -208,6 +220,8 @@ public class GameManager : MonoBehaviour
     {
         // Salva a pontuação final
         PontuacaoFinal = Mathf.FloorToInt(pontuacao);
+
+        HighScoreManager.SalvarScore(PontuacaoFinal);
 
         Debug.Log("VITÓRIA! Score: " + PontuacaoFinal);
 

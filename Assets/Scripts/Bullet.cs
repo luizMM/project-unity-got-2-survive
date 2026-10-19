@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -8,8 +7,13 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float tempoVida = 6f;
     [SerializeField] private int dano = 1;
 
+    [Header("Efeitos")]
+    [SerializeField] private GameObject efeitoImpacto;
+
     private Rigidbody2D rb;
     private Vector2 direcao;
+
+    private bool destruindo = false;
 
     void Awake()
     {
@@ -18,11 +22,9 @@ public class Bullet : MonoBehaviour
 
     void Start()
     {
-        // Evita que o projétil fique na cena para sempre
         Destroy(gameObject, tempoVida);
     }
 
-    // Chamado pelo inimigo quando o projétil é criado
     public void Inicializar(Vector2 direcaoDisparo)
     {
         direcao = direcaoDisparo.normalized;
@@ -30,6 +32,9 @@ public class Bullet : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (destruindo)
+            return;
+
         rb.MovePosition(
             rb.position + direcao * velocidade * Time.fixedDeltaTime
         );
@@ -37,26 +42,51 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Ignora outros projéteis e inimigos
-        if (other.GetComponent<Bullet>() != null ||
-            other.GetComponentInParent<EnemyDamage>() != null)
+        if (destruindo)
             return;
 
-        // Verifica se atingiu o Player
+        // Ignora outros projéteis e inimigos
+        if (other.GetComponentInParent<Bullet>() != null ||
+            other.GetComponentInParent<EnemyDamage>() != null)
+        {
+            return;
+        }
+
+        // Colisão com o Player
         PlayerHealth player =
             other.GetComponentInParent<PlayerHealth>();
 
         if (player != null)
         {
             player.ReceberDano(dano);
-            Destroy(gameObject);
+
+            DestruirProjetil(false);
             return;
         }
 
-        // Destrói ao atingir parede
+        // Colisão com paredes
         if (other.CompareTag("Wall"))
         {
-            Destroy(gameObject);
+            DestruirProjetil(true);
         }
+    }
+
+    void DestruirProjetil(bool criarImpacto)
+    {
+        if (destruindo)
+            return;
+
+        destruindo = true;
+
+        if (criarImpacto && efeitoImpacto != null)
+        {
+            Instantiate(
+                efeitoImpacto,
+                transform.position,
+                Quaternion.identity
+            );
+        }
+
+        Destroy(gameObject);
     }
 }
